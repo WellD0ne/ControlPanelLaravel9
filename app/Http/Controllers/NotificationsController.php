@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class NotificationsController extends Controller
 {
     //
-    public function index(Request $request)
+    public function index()
     {
 
         $notifications = Auth::user()->notifications;

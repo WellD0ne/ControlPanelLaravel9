@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -13,8 +12,7 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        $dateWriteoff = $user->dateact;
-        $dateWriteoff = Carbon::createFromDate($dateWriteoff);
+        $dateWriteoff = Carbon::createFromDate($user->dateact);
         $dateCurrent = Carbon::today();
         $userBalance = $user->ostatok;
         $subscriptionFee = $user->abonplata;
@@ -34,9 +32,6 @@ class HomeController extends Controller
 
         // Получаем финансовые операции
         $financeOperations = $user->financeOperations()->with('financeType')->orderBy('op_date', 'desc')->get();
-
-        // Получаем товары для витрины
-//        $products = MarketProduct::where('is_active', true)->orderBy('id')->get();
 
         return view('home', compact("user", "firstNotification", "financeOperations", "alertBalance", "alertBalanceForHumans"));
     }
