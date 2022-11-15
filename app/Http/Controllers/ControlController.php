@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangePasswordRequest;
 use App\Models\PasswordChange;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class ControlController extends Controller
@@ -14,19 +14,15 @@ class ControlController extends Controller
     }
 
 //    Запрос на смену пароля
-    public function changePassword(Request $request)
+    public function changePassword(ChangePasswordRequest $request)
     {
-        $this->validate($request, [
-            'currentPassword' => ['required', 'current_password:web'],
-            'newPassword' => 'required|min:6|max:255|alpha_num|bail|regex:/^[a-z\d]+$/i',
-            'confirmNewPassword' => 'required|same:newPassword',
-        ]);
+        $validated = $request->validated();
 
         $changePassword = new PasswordChange;
         $changePassword->login = auth()->user()->login;
         $changePassword->uid = auth()->user()->uid;
-        $changePassword->new_plain = $request->newPassword;
-        $changePassword->new_password = Hash::make($request->newPassword);
+        $changePassword->new_plain = $validated['newPassword'];
+        $changePassword->new_password = Hash::make($validated['newPassword']);
         $changePassword->is_held = 0;
         $changePassword->save();
 
